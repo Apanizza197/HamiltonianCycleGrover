@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{geometry}
+\usepackage{physics}
+\geometry{a4paper, margin=1in}
+
+\begin{document}
+
+\section{Introduction}
+INTRODUCCION (VER HCP-GROVER-V1 PARA UNA PRIMERA VERSIÓN)
+
+\section{Background}
+PONER ALGO DE CAMINO HAMILTONIANO, DISTINTOS ENFOQUES TOMADOS, LOS MEJORES ALGORITMOS. EXPLICAR GROVER. (VER HCP-GROVER-V1 PARA UNA PRIMERA VERSIÓN)
+
+\section{Proposed Algorithm for Hamiltonian Cycle Problem}
+In order to solve an NP-problem with Grover’s Algorithm, it is necessary to translate a decision problem into a search problem. First, we must encode a way to choose the cycle with a binary code. Let \(G = (V, E)\) be the input graph with $n$ vertices and $e$ edges. Vertices are numbered as $\{0, 1, 2, \ldots, N\}$. For every vertex, $n = \log_2 N$ bits are used to indicate the position it occupies in the cycle.
+
+\section{Proposed Algorithm for Hamiltonian Cycle Problem}
+For example, the bitstring $11000110$ would be translated to $3 - 0 - 1 - 2$. This means the vertex 0 is on the position 3, the vertex 1 is on the position 0, and so on. The resulting cycle is $1 - 2 - 3 - 0$.
+
+The search space consists of every possible permutation of the positions of the vertices in the Hamiltonian cycle. Therefore, its size is $2(N \times n)$. We will be searching the space to find solutions that follow these two conditions:
+\begin{enumerate}
+    \item No two vertices can have the same position.
+    \item Vertices with consecutive positions have to be connected by an edge. (The last and first positions are considered consecutive)
+\end{enumerate}
+
+$$\text{INSERTAR TEOREMA QUE DICE QUE ESTO ES RESOLVER EL PROBLEMA DEL CICLO HAMILTONIANO}$$
+
+We present an algorithm to solve HCP of a directed graph with $N = 2n$ vertices. Later, a possible adaptation of this algorithm to an arbitrary graph is proposed.
+
+The Grover operator $G$ is divided into the oracle $U_\omega$, which marks the strings that satisfy the two conditions, and the diffuser $D$.
+
+The quantum circuit block diagram of the oracle $U_\omega$ for the HCP problem is shown in Fig. $3)$. The construction of $U_\omega$ is divided into two blocks: comparator, which checks the first condition; missing edge detector, which checks the second condition.
+
+\subsection{Circuit definition}
+The main register $\ket{\psi}$, which covers the search space, has $m = N \times n$ qubits. Applying $U_\omega$ requires the addition of three registers. An ancilla register $\ket{\theta}$ of $k = \left(\frac{N}{2}\right)$ qubits, and a single qubit register $\ket{\zeta}$.
+
+\subsection{Initialization}
+In the initialization, the main register is set as a superposition of all the states in the search space. This is done by applying the Hadamard Gate to each qubit in the main register. The qubits in the ancilla and the output qubit are set to $\ket{1}$ with the NOT gate. The resulting state is expressed as:
+$$\ket{\psi_0} \otimes \ket{\theta_0} \otimes \ket{\zeta_0}$$
+where:
+$$\ket{\psi_0} = \frac{1}{\sqrt{2^m}} \sum_{i=0}^{2^m-1} \ket{i} = \ket{+}^{\otimes m}$$
+$$\ket{\theta_0} = \ket{1}^{\otimes k}$$
+
+$$|\zeta_0\rangle = |0\rangle$$
+
+\subsection{Oracle \(U_\omega\)}
+The oracle has two main building blocks: Positional Exclusivity Block and Missing Edge Detector Block.
+
+The Comparator circuit, described at \cite{reference}, is a fundamental component of these blocks. The circuit, composed of NOT, CNOT, and Toffoli/MCT gates, is applied to two registers of the same size, \(a\) and \(b\), and stores the result in the \(f\) qubit.
+
+\[
+\text{Comparator}(a, b, f) =
+\begin{cases}
+    f = f, & \text{if } a \neq b \\
+    f = f \oplus 1, & \text{if } a = b
+\end{cases}
+\]
+
+\textbf{POSIBILIDAD, PONER LA DESCRIPCION DEL BLOQUE, A PESAR DE QUE SE DA LA CITA.}
+
+The Plus One circuit, which takes a state \(\ket{i}\) to the state \(\ket{(i + 1) \mod 2^p}\).
+
+\textbf{AGREGAR DESCRIPCION DEL PLUS ONE Y EL MINUS ONE.}
+
+
+\subsection{Positional Exclusivity Block}
+To ensure that each position is assigned to exactly one vertex, each vertex is compared with all the other vertices. The comparator circuit is applied to the \(\binom{n}{2}\) combinations of vertices, and the results are stored in \(\ket{\theta}\). If any two vertices are in the same position, at least one qubit in \(\ket{\theta}\) will be in the state \(\ket{0}\).
+
+\end{document}
+
