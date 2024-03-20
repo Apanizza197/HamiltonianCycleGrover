@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{eucal}
+\usepackage{physics}
+
+\begin{document}
+
+\section{Introduction}
+
+Quantum computing has meant a paradigm shift in computer science, introducing a new era of computational power and possibilities. By leveraging the principles of quantum mechanics, quantum computing offers capabilities far beyond those of classical computers. The ability to process information in parallel, exploit superposition and entanglement, and tackle previously intractable problems like integer factorization and optimization has opened up a realm of applications spanning cryptography, drug discovery, finance, and beyond.\\
+Although quantum hardware is still evolving, Noisy Intermediate-Scale Quantum (NISQ) \cite{Preskill} computers have already begun to unveil the potential of quantum computing, igniting widespread interest in implementing quantum algorithms that promise significant speedups over classical counterparts. In particular, the speedup of solving NP-complete problems is an area that quantum computing can tackle. In this paper, we have focused on the Hamiltonian Cycle Problem.\\
+This problem is one of Karp's 21 seminal NP-complete problems, it involves determining whether a given graph contains a Hamiltonian cycle—a cycle that visits every vertex exactly once. The problem is significant because of its similarities with the TSP, and its applications span various domains, including logistics and network optimization, where identifying optimal cycles is crucial AGREGAR CITAS. Traditional solution methods range from brute force approaches to sophisticated algorithms like dynamic programming and Monte Carlo simulations. However, these methods often face challenges with scalability and efficiency, motivating the exploration of alternative solutions. In this paper, we propose utilizing Grover's algorithm to tackle the HC problem, offering the potential for quadratic speedup.\\
+The structure of this paper is as follows. An explanation of Grover's algorithm is given in Section II. The proposed methodology is given in Section III. Section IV explores the existing solutions for the problem and compares the theoretical results.
+
+
+\section{Background}
+\subsection{Grover's Algorithm}
+
+The search algorithm developed by Lov K. Grover in 1997 \cite{Grover1} is a milestone in the development of quantum algorithms. It solves the problem of finding a tagged element (or $M$ elements) in a disordered set of $N$ elements using $k_{Gr}= \lfloor\frac{\pi}{4} \sqrt{\frac{N}{M}}\rfloor$ times a system, called oracle, which is able to identify this element. It presents a quadratic improvement in order relative to the classical brute-force search algorithm, which requires in the worst-case scenario N system calls. Grover's algorithm does not converge with 100\% probability to the desired state, it converges with an arbitrarily high probability that depends on the relationship between solutions and the size of the search space.\\
+As Grover proposed later, the algorithm can be used to speed up the solution of NP-complete problems \cite{Grover2}. Since, its application has been explored with some problems such as Clique problem \cite{Clique, Clique2}, k-coloring \cite{Coloring1, Coloring2} and SAT \cite{SAT_ions, SAT_paralel}. Nielsen and Chuang predicted the solution of the HC problem using Grover\cite{Nielsen_Chuang_2010}.\\
+The original problem presented by Grover \cite{Grover1} is as follows. Let there be a set of $N = 2^n$ quantum states in a Hilbert space ($\mathcal{H}_n$), where n is the number of qubits, and an unknown canonical basis state marked between them (solution to the problem). Given a system, an operator, called an oracle that identifies the marked element, the objective is to find this marked element with high probability, using as few queries to the oracle as possible.\\
+Let $\ket{t}$ be the marked element of the base, and $\ket{s}$ the uniform superposition of all basis states.
+$$\ket{s} = \frac{1}{\sqrt{N}} \sum_{i=0}^{N-1} \ket{i}$$
+The algorithm can be schematized as:
+\begin{description}
+\item [Step 1] The quantum circuit is initialized with the initial state $\ket{s}$.
+\item [Step 2] The oracle operator $O = I_d - 2\ket{t}\bra{t}.$ is applied.
+\item [Step 3] The diffusion operator $D = I_d - 2\ket{s}\bra{s}$ is applied.
+\item [Step 4] Repeat $\lfloor \frac{\pi}{4} \sqrt{N} \rfloor - 1$ times steps 2 and 3.
+\item [Step 5] A projective measurement is performed on the canonical basis at each qubit. The marked state is obtained with high probability for $N \gg 1$.
+\end{description}
+
+It is shown in \cite{Grover_1997} that $k_{Gr}$ queries to the oracle, is an optimal quantity in the sense that is the smallest number of queries that can be made to find the marked element with high probability. By applying $k_{Gr}$ times the oracle and diffuser operators, the resultant state can be computed as
+$$\ket{\psi_k} = G^{k}\ket{\psi_{0}}$$
+where $G = DO$ is Grover's operator. If the state $\ket{\overline{t}}$ and angle $\theta$ are defined as follow
+$$\ket{\overline{t}} = \frac{1}{\sqrt{N-1}}\sum_{i=0, i\neq t}^{N-1}\ket{i} \text{ and } \theta = \arcsin{\frac{1}{\sqrt{N}}}$$
+it can be shown that state $\ket{\psi_k}$ is
+$$\ket{\psi_k} = \sin{((2k+1)\theta)} \ket{t} + \cos{((2k+1)\theta)} \ket{\overline{t}}$$
+Then, the probability of measuring the marked element is
+$$p(k) = \sin^2{((2k+1)\theta)}$$
+This algorithm has a simple geometrical interpretation. The state $\ket{\overline{t}}$ is orthogonal to the state $\ket{t}$, and the Grover operator $G$ performs a double reflection on the hyperplane formed by both states.\\
+A more detailed and extended explanation for when the set has more than one solution can be found in reference \cite{Nielsen_Chuang_2010}.
+
+\subsection{Hamiltonian Cycle Problem}
+Explicamos qué es el Hamiltonian Cycle Problem.
+Explicamos cuáles son los principales usos de resolver el HCP.
+Consultamos las heurísticas actuales de resolución del HCP.
+
+\section{Proposed Algorithm for Hamiltonian Cycle Problem}
+A simple brute force algorithm is to perform a search through all possible ordering of the vertices. First generate each possible ordering $(v_1,\dots, v_n)$. Repetitions will be allowed, as they ease the analysis without affecting the result. Then, check each ordering to see whether it is a Hamiltonian cycle for the graph. If not, continue checking the ordering.
+Since they are $n^n = 2^{n\log_2 n}$ possible orderings of the vertices that must be searched, the ...
+
+For example the bitstring $11000110$ would be translated to $3-0-1-2$. This means $v_0$ is on the position $3$, $v_1$ in on the position $0$ and so on. The resulting cycle is $(v_1, v_2, v_3, v_0)$.
+\subsection{Generalization for an arbitrary graph}
+
+
+
+\section{Informacion relevante para el futuro}
+
+
+\bibliography{references.bib} 
+\bibliographystyle{ieeetr}
+
+\end{document}
