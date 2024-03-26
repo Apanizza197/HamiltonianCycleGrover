@@ -137,7 +137,7 @@ A second oracle that employs a single ancilla register is proposed.
 The position\_index register $\ket{\psi}$ and $\ket{\theta}$ remain the same, but the $\ket{\zeta}$ register is reduced to a single qubit, initializated in the $\ket{0}$ state.\\
 It is important for this formulation that the maximum amount of qubits needed for the missing edge block is less than $C^N_2$. The maximum number of edges a directed graph can have is $2C^N_2$. However, if both edges $(u, v)$ and $(v, u)$ are missing, the same ancilla can store the result of the comparison. This is because a vertex can not have the previous and the next position of another vertex in any cycle of more than two elements. Therefore, the constraints are exclusionary, and a single qubit can be used as a witness for both.\\
 The proposed oracle follows these steps: it initiates with the ME block and applies an MCT controlled by the $\ket{\theta}$ with $\ket{\zeta}$ as the target, another ME block is used to return the ancilla register to its initial state. Subsequently, the PE block is executed. The ancilla registers will be in state $\ket{1}$ for valid solutions, therefore, a phase shift is applied on $\ket{\zeta}$ controlled by $\ket{\theta}$. The inverse circuit is applied in order to restore the ancilla to its initial state.\\
-Figure NUMERO DE FIGURA shows the diagram of the complete oracle $O$. The first generic run of the oracle will be analyzed. The solution space is divided into four groups. The $A$ states that represent a valid hamiltonian cycle $\alpha$,the $B$ states that only satisfy the missing edge constraint $\beta$, the $C$ states that only satisfy the positional exclusivity constraint $\gamma$, and the rest of the $D$ states $\delta$.
+Fig. 8 shows the diagram of the complete oracle $O$. The first generic run of the oracle will be analyzed. The solution space is divided into four groups. The $A$ states that represent a valid hamiltonian cycle $\alpha$,the $B$ states that only satisfy the missing edge constraint $\beta$, the $C$ states that only satisfy the positional exclusivity constraint $\gamma$, and the rest of the $D$ states $\delta$.
 
 $$
 \ket{\rho_0} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} + \sum_{i=1}^{B} \ket{\beta_i} + \sum_{i=1}^{C} \ket{\gamma_i} + \sum_{i=1}^{D} \ket{\delta_i} \right) \otimes \ket{1}^{\otimes k} \otimes \ket{0}
@@ -176,9 +176,14 @@ $$
 The next blocks return the ancilla registers $\ket{\theta}$, $\ket{\zeta}$, and $\ket{\psi}$ to their initial states.
 
 $$
-\ket{\rho_8} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} + \sum_{i=1}^{B} \ket{\beta_i} + \sum_{i=1}^{C} \ket{\gamma_i} + \sum_{i=1}^{D} \ket{\delta_i} \right) \otimes \ket{1}^{\otimes k} \otimes \ket{0}
+\ket{\rho_8} = \frac{1}{2^m} \left( - \sum_{i=1}^{A} \ket{\alpha_i} + \sum_{i=1}^{B} \ket{\beta_i} + \sum_{i=1}^{C} \ket{\gamma_i} + \sum_{i=1}^{D} \ket{\delta_i} \right) \otimes \ket{1}^{\otimes k} \otimes \ket{0}
 $$
-AGREGAR LA FIGURA 6 DE TODO EL ORACULO EN BLOQUE
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.8]{figures/oracle_circuit.pdf}
+\caption{Oracle with ancilla reutilization}
+\end{figure}
 
 \section{Generalization for an arbitrary graph}
 
@@ -192,9 +197,12 @@ $$\cup \{(v'_{n+1}, v'_j) | (v_n, v_j) \in E\} $$
 In case it is necessary to add more than one vertex, a clique is added between the newly formed vertices, so as to minimize the number of missing edges, and thus the length of the oracle.
 
 \section{Discussion}
-Tenemos que saber la cantidad de soluciones para saber $k_{Gr}$
+A main challenge in the implementation of the proposed algorithm is determining $k_{Gr}$ when the number of solutions is not known. \cite{Nielsen_Chuang_2010} propose an algorithm that combines the Grover operator with the phase estimation technique to estimate the number of solutions. This algorithm requires the implementation of a Quantum Fourier Transform, which is a complex circuit.\\
+Another approach is to choose a fixed $k_{Gr}$ and run the algorithm multiple times. The probability of finding the solution increases with the number of runs. If there is no solution for the problem, the solution distribution will be uniform, with no solution having a greater probability than the others. If there are solutions, the valid states will be amplified.\\
+This algorithm is quadratic in the number of qubits. The first formulation uses at most $N\log{N} + 2 N(N-1)/2$ qubits, while the second formulation uses a fixed number of qubits $N \log{N} + N(N-1)/2 + 1$. Both formulations require $O(N^2)$ gates for the oracle, that should be applied $k_{Gr}\approx \sqrt{N^N}$ times. Therefore, the order of the algorithm is $O(N^2 2^{N \log N})$.\\
+Asymptotically, the quantum algorithm requires the square root of the number of operation a brute force classical algorithm requires. \\
+Some examples of the algorithm running on a simulator are shown in Fig. 9. The algorithm was implemented in Qiskit \cite{Qiskit}, and the results were obtained by running the algorithm on a classical simulator. The algorithm was run with $N = 4$ vertices.
 
-\section{Conclusion}
 
 
 \bibliography{references.bib} 

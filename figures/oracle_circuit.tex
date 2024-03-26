@@ -1,0 +1,20 @@
+\documentclass[border=2px]{standalone}
+
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+\begin{document}
+\scalebox{1.0}{
+\Qcircuit @C=1.0em @R=0.2em @!R { \\
+		\nghost{\hspace{2pt} {\ket{\rho}_0} \hspace{2pt}} & \lstick{\hspace{2pt} {\ket{\rho}_0} \hspace{2pt}} & \rstick{{\ket{\rho}}_{1}} & \rstick{{\ket{\rho}}_{2}} & \rstick{{\ket{\rho}}_{3}} & \rstick{{\ket{\rho}}_{4}} & \rstick{{\ket{\rho}}_{5}} & \rstick{{\ket{\rho}}_{6}} & \rstick{{\ket{\rho}}_{7}} & \rstick{{\ket{\rho}}_{8}} & \rstick{{\ket{\rho}}_{9}} & \nghost{\vdots} \\
+	 	\nghost{{\ket{\psi}}_{0} :  } & \lstick{{\ket{\psi}}_{0} :  } & \multigate{7}{\mathrm{ME}} & \qw & \multigate{7}{\mathrm{ME}} & \multigate{7}{\mathrm{PE}} & \qw & \multigate{7}{\mathrm{PE}} & \multigate{7}{\mathrm{ME}} & \qw & \multigate{7}{\mathrm{ME}} & \qw\\
+	 	\nghost{{\ket{\psi}}_{1} :  } & \lstick{{\ket{\psi}}_{1} :  } & \ghost{\mathrm{ME}} & \qw & \ghost{\mathrm{ME}} & \ghost{\mathrm{PE}} & \qw & \ghost{\mathrm{PE}} & \ghost{\mathrm{ME}} & \qw & \ghost{\mathrm{ME}} & \qw \\
+	 	\nghost{{\vdots}  } & \lstick{{\vdots}\hspace{8pt}  } & \nghost{\mathrm{ME}} & \vdots & \nghost{\mathrm{ME}} & \nghost{\mathrm{PE}} & \vdots & \nghost{\mathrm{PE}} & \nghost{\mathrm{ME}} & \vdots & \nghost{\mathrm{ME}} & \vdots \\
+	 	\nghost{{\ket{\psi}}_{m} :  } & \lstick{{\ket{\psi}}_{m} :  } & \ghost{\mathrm{ME}} & \qw & \ghost{\mathrm{ME}} & \ghost{\mathrm{PE}} & \qw & \ghost{\mathrm{PE}} & \ghost{\mathrm{ME}} & \qw & \ghost{\mathrm{ME}} & \qw \\
+	 	\nghost{{\ket{\theta}}_{0} :  } & \lstick{{\ket{\theta}}_{0} :  } & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \ghost{\mathrm{PE}} & \ctrl{1} & \ghost{\mathrm{PE}} & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \qw \\
+	 	\nghost{{\ket{\theta}}_{1} :  } & \lstick{{\ket{\theta}}_{1} :  } & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \ghost{\mathrm{PE}} & \ctrl{1} & \ghost{\mathrm{PE}} & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \qw \\
+	 	\nghost{{\vdots}  } & \lstick{{\vdots}\hspace{8pt}  } & \nghost{\mathrm{ME}} & \vdots & \nghost{\mathrm{ME}} & \nghost{\mathrm{PE}} & \vdots & \nghost{\mathrm{PE}} & \nghost{\mathrm{ME}} & \vdots & \nghost{\mathrm{ME}} & \vdots \\
+	 	\nghost{{\ket{\theta}}_{k} :  } & \lstick{{\ket{\theta}}_{k} :  } & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \ghost{\mathrm{PE}} & \ctrl{1} & \ghost{\mathrm{PE}} & \ghost{\mathrm{ME}} & \ctrl{1} & \ghost{\mathrm{ME}} & \qw \\
+	 	\nghost{{\ket{\zeta}} :  } & \lstick{{\ket{\zeta}} :  } & \qw & \targ & \qw & \qw & \gate{\mathrm{Z}} & \qw & \qw & \targ & \qw & \qw \\
+\\ }}
+\end{document}
