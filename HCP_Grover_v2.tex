@@ -25,7 +25,11 @@ The original problem presented by Grover \cite{Grover1} is as follows. Let there
 Let $\ket{t}$ be the marked element of the base, and $\ket{s}$ the uniform superposition of all basis states. An oracle operator $O = I_d - 2\ket{t}\bra{t}$ is applied and changes the phase of the marked state. A diffusion operator $D = I_d - 2\ket{s}\bra{s}$ is applied and amplifies the amplitude of the marked state. Applying the Grover operator $(G=DO)$ $k_{Gr}$ times maximizes the probability of measuring $\ket{t}$.\\
 A more detailed and extended explanation for when the set has more than one solution can be found in reference \cite{Nielsen_Chuang_2010}.
 
-AGREGAR DIAGRAMA DE GROVER QUE ESTE LINDO.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=1.5]{figures/grover.pdf}
+\caption{Grover's algorithm circuit, the Grover operator $G = DO$ is applied $k_{Gr}$ times.}
+\end{figure}
 
 \subsection{Hamiltonian Cycle Problem}
 Explicamos qué es el Hamiltonian Cycle Problem.
@@ -58,15 +62,13 @@ The search space includes every possible permutation of the positions of the ver
         \hline
     \end{tabular}
     \label{tab:example}
-    \caption{Table with some examples of the solutions}
+    \caption{Some examples of the possible solution encodings.}
 \end{table}
 
 An algorithm to solve the HCP of a directed graph with $N = 2^n$ vertices is presented. The main contribution of this paper is the oracle $O$ that flips the phase of the states that satisfy both constraints. Later, possible adaptations of the algorithm for arbitrary graphs are proposed.
 
-\subsection{Circuit definition}
-The position index register $\ket{\psi}$, which covers the search space, has $m = N\log N$ qubits. Applying $O$ requires the addition of two registers, one for each constraint. An ancilla register $\ket{\theta}$ of $k = C^N_2$ qubits, and a second ancilla register $\ket{\zeta}$ with $l$ qubits. $l$ is the number of edges of the  complementary graph.
-
-\subsection{Initialization}
+\subsection{Circuit initialization}
+The position index register $\ket{\psi}$, which covers the search space, has $m = N\log N$ qubits. Applying $O$ requires the addition of two registers, one for each constraint. An ancilla register $\ket{\theta}$ of $k = C^N_2$ qubits, and a second ancilla register $\ket{\zeta}$ with $l$ qubits. $l$ is the number of edges of the  complementary graph.\\
 Firstly, all position index qubits should be set in superposition of all states in the search space. This is done by applying the Hadamard Gate to each qubit in the main register. The qubits in the ancillas are set to $\ket{1}$ with the NOT gate. The resulting state is expressed as:
 $$\ket{\psi_0} \otimes \ket{\theta_0} \otimes \ket{\zeta_0}$$
 where:
@@ -74,9 +76,9 @@ $$\ket{\psi_0} = \frac{1}{\sqrt{2^m}}\sum_{i=0}^{m} \ket{i}$$
 $$\ket{\theta_0} = \ket{1}^{\otimes k}$$
 $$\ket{\zeta_0} = \ket{1}^{\otimes l}$$
 
-\subsection{Oracle}
-
-\subsubsection{Positional Exclusivity Block}
+\subsection{Grover's Operator}
+The Grover operator is composed of two parts, the oracle $O$ and the diffusion operator $D$. The oracle is the main contribution of this paper, and it is divided into three blocks: Positional Exclusivity, Missing Edge Detector, and a multi-controlled phase shift. The diffusion operator is the same as in the original Grover's algorithm.
+\subsubsection*{Positional Exclusivity Block}
 To satisfy the first constraint, the position of each vertex is compared with the position of every other vertex. The comparison is made by a comparator circuit defined in \cite{Coloring1}. The circuit, composed of NOT, CNOT and Toffoli/MCT gates, is applied to two registers of the same size, $a$ and $b$, and  stores the result in an ancilla qubit $o$.
 $$\text{Comparator}(a, b, o) =
 \begin{cases}
@@ -97,7 +99,7 @@ The comparator circuit is applied to the $C^N_2$ combinations of position indexe
 \caption{First three comparisons in the Positional Exclusivity block}
 \end{figure}
 
-\subsubsection{Missing Edge Detector Block}
+\subsubsection*{Missing Edge Detector Block}
 
 Another subcircuit is introduced in this part, called the Plus One circuit. This circuit takes state $\ket{i}$ to state $\ket{(i+1) \mod 2^p}$. Given a register $q$ with $p$ qubits, a MCT is applied with the $p-1$ least significant qubits as control, and the most significant qubit as the target. This process is repeated taking with the $p-1$ least significant bits, so that every step the MCT has one less control. The inverse circuit, named Minus One circuit, takes state $\ket{i}$ to state $\ket{(i-1) \mod 2^p}$.
 \begin{figure}[hbtp]
@@ -115,16 +117,84 @@ The Plus One circuit is used to take the vertex to the next position, and then t
 \caption{Missing Edge block of the example above}
 \end{figure}
 
-\subsubsection{Complete Oracle Structure}
+\subsubsection*{Complete Oracle Structure}
 The complete oracle consists of the Positional Exclusivity Block, a Missing Edge Block, and a multi-controlled phase shift, acting in all the ancilla qubits. Then, the Positional Exclusivity Block and the Missing Edge Block are repeated to return the ancillas to their original state.
 
-INSERTAR IMAGEN DE TODO EL ORACULO
+\begin{figure}[hbtp]
+\caption{Oracle}
+\centering
+\includegraphics[scale=0.6]{figures/oracle.pdf}
+\end{figure}
+
+\subsubsection*{Diffusion Operator}
+
+The diffusion operator is applied on the position\_index register.
+
+\section{Ancilla Reutilization}
+This approach employs a distinct ancilla register for each constraint enforcement. It is possible to reuse the ancilla, which helps minimize the required qubit count. Moreover, it reduces the size of the maximum MCT gate needed. However, this strategy involves a tradeoff between qubit quantity, circuit length, and gate utilization. This tradeoff is studied in \cite{SAT_paralel}.\\
+A second oracle that employs a single ancilla register is proposed.
+\subsection{Circuit description}
+The position\_index register $\ket{\psi}$ and $\ket{\theta}$ remain the same, but the $\ket{\zeta}$ register is reduced to a single qubit, initializated in the $\ket{0}$ state.\\
+It is important for this formulation that the maximum amount of qubits needed for the missing edge block is less than $C^N_2$. The maximum number of edges a directed graph can have is $2C^N_2$. However, if both edges $(u, v)$ and $(v, u)$ are missing, the same ancilla can store the result of the comparison. This is because a vertex can not have the previous and the next position of another vertex in any cycle of more than two elements. Therefore, the constraints are exclusionary, and a single qubit can be used as a witness for both.\\
+The proposed oracle follows these steps: it initiates with the ME block and applies an MCT controlled by the $\ket{\theta}$ with $\ket{\zeta}$ as the target, another ME block is used to return the ancilla register to its initial state. Subsequently, the PE block is executed. The ancilla registers will be in state $\ket{1}$ for valid solutions, therefore, a phase shift is applied on $\ket{\zeta}$ controlled by $\ket{\theta}$. The inverse circuit is applied in order to restore the ancilla to its initial state.\\
+Figure NUMERO DE FIGURA shows the diagram of the complete oracle $O$. The first generic run of the oracle will be analyzed. The solution space is divided into four groups. The $A$ states that represent a valid hamiltonian cycle $\alpha$,the $B$ states that only satisfy the missing edge constraint $\beta$, the $C$ states that only satisfy the positional exclusivity constraint $\gamma$, and the rest of the $D$ states $\delta$.
+
+$$
+\ket{\rho_0} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} + \sum_{i=1}^{B} \ket{\beta_i} + \sum_{i=1}^{C} \ket{\gamma_i} + \sum_{i=1}^{D} \ket{\delta_i} \right) \otimes \ket{1}^{\otimes k} \otimes \ket{0}
+$$
+
+In $\ket{\rho_1}$, the ancilla of the states $C$ and $D$ have at least one flipped qubit. The string of $k$ qubits that are not all in state $\ket{1}$ will be represented with a $\ket{l}$.
+
+$$
+\ket{\rho_1} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} \ket{1}^{\otimes k} + \sum_{i=1}^{B} \ket{\beta_i} \ket{1}^{\otimes k} + \sum_{i=1}^{C} \ket{\gamma_i} \ket{l_{\gamma_i}} + \sum_{i=1}^{D} \ket{\delta_i} \ket{l_{\delta_i}} \right) \otimes \ket{0}
+$$
+
+The $\ket{\zeta}$ state is only flipped for the states that have the $\ket{\theta}$ ancilla in state $\ket{1}^{\otimes k}$.
+
+$$
+\ket{\rho_2} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} \ket{1}^{\otimes k} \ket{1} + \sum_{i=1}^{B} \ket{\beta_i} \ket{1}^{\otimes k} \ket{1} + \sum_{i=1}^{C} \ket{\gamma_i} \ket{l_{\gamma_i}} \ket{0} + \sum_{i=1}^{D} \ket{\delta_i} \ket{l_{\delta_i}} \ket{0} \right)
+$$
+
+The second missing edge block returns the ancilla to its initial state.
+
+$$
+\ket{\rho_3} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} \ket{1}^{\otimes k} \ket{1} + \sum_{i=1}^{B} \ket{\beta_i} \ket{l_{\beta_i}} \ket{1} + \sum_{i=1}^{C} \ket{\gamma_i} \ket{1}^{\otimes k} \ket{0} + \sum_{i=1}^{D} \ket{\delta_i} \ket{1}^{\otimes k} \ket{0} \right)
+$$
+
+The positional exclusivity block changes the ancilla of states $\ket{\beta}$ and $\ket{\delta}$.
+
+$$
+\ket{\rho_4} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} \ket{1}^{\otimes k} \ket{1} + \sum_{i=1}^{B} \ket{\beta_i} \ket{l_{\beta_i}} \ket{1} + \sum_{i=1}^{C} \ket{\gamma_i} \ket{1}^{\otimes k} \ket{0} + \sum_{i=1}^{D} \ket{\delta_i} \ket{l_{\delta_{2i}}} \ket{0} \right)
+$$
+
+In state $\ket{\rho_5}$, the $\ket{\alpha}$ states are flipped.
+
+$$
+\ket{\rho_5} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} \ket{1}^{\otimes k} \ket{1} + \sum_{i=1}^{B} \ket{\beta_i} \ket{l_{\beta_i}} \ket{1} + \sum_{i=1}^{C} \ket{\gamma_i} \ket{1}^{\otimes k} \ket{0} + \sum_{i=1}^{D} \ket{\delta_i} \ket{l_{\delta_{2i}}} \ket{0} \right)
+$$
+
+The next blocks return the ancilla registers $\ket{\theta}$, $\ket{\zeta}$, and $\ket{\psi}$ to their initial states.
+
+$$
+\ket{\rho_8} = \frac{1}{2^m} \left( \sum_{i=1}^{A} \ket{\alpha_i} + \sum_{i=1}^{B} \ket{\beta_i} + \sum_{i=1}^{C} \ket{\gamma_i} + \sum_{i=1}^{D} \ket{\delta_i} \right) \otimes \ket{1}^{\otimes k} \otimes \ket{0}
+$$
+AGREGAR LA FIGURA 6 DE TODO EL ORACULO EN BLOQUE
 
 \section{Generalization for an arbitrary graph}
 
+Adapting the oracle for a graph with an arbitrary number of vertices faces two challenges. Firstly, the superposition of states introduces invalid positions, where it is nonsensical for a vertex to occupy, for instance, the 15th position in a cycle of 10 elements. To address this issue, a strategy akin to the one employed in \cite{Coloring1} can be applied, introducing an invalid position block.\\
+The second challenge is associated with the Plus One circuit. This circuit efficiently transitions a state from $\ket{i}$ to $\ket{(i + 1) \mod 2p}$. However, constructing a circuit to transition a state from $\ket{i}$ to $\ket{(i + 1) \mod l}$ for an arbitrary $l$ is more intricate. A modular adder is proposed in \cite{modular}, using additional ancilla registers.\\
+The alternative approach followed is to seek a transformation that transforms graphs with an arbitrary number of vertices into graphs with a number of vertices that is a power of two. This transformation should maintain the existing Hamiltonian cycles without introducing new ones.\\
+The selected transformation operates as follows: for an arbitrary vertex, it is split into two separate connected vertices. The first vertex retains all the edges that entered the original vertex, while the second vertex preserves all the edges that exited the original vertex. Mathematically, let $G = (V, E)$ represent the original graph, where $V = \{v_1, v_2, ..., v_n\}$ is the set of vertices and $E$ is the set of edges. The transformation $T : (V, E) \rightarrow (V', E')$ transforms vertex $v_n$ in $V$ into two vertices $v'_n$ and $v'_{n+1}$ in $V'$. $E'$ is defined as follows:
+$$ E' = \{(v'_j, v'_i) | (v_j, v_i) \in E, \text{ where } i \neq n \text{ and } j \neq n\} $$
+$$\cup \{(v'_j, v'_n) | (v_j, v_n) \in E\} $$
+$$\cup \{(v'_{n+1}, v'_j) | (v_n, v_j) \in E\} $$
+In case it is necessary to add more than one vertex, a clique is added between the newly formed vertices, so as to minimize the number of missing edges, and thus the length of the oracle.
 
+\section{Discussion}
+Tenemos que saber la cantidad de soluciones para saber $k_{Gr}$
 
-\section{Informacion relevante para el futuro}
+\section{Conclusion}
 
 
 \bibliography{references.bib} 

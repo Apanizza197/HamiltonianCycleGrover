@@ -1,0 +1,12 @@
+\documentclass[border=2px]{standalone}
+
+\usepackage[braket, qm]{qcircuit}
+\usepackage{graphicx}
+
+\begin{document}
+\scalebox{1.0}{
+\Qcircuit @C=1.0em @R=0.2em @!R {
+	 	\nghost{{main\_register}:  } & \lstick{{main\_register} :  } & \qw {/_n} & \gate{\mathrm{H}}  & \multigate{1}{\mathrm{O}} & \gate{\mathrm{D}} & \qw & \cdots \\
+	 	\nghost{{ancilla} :  } & \lstick{{ancilla} :  } & \qw {/_m} &\gate{\mathrm{X}} & \ghost{\mathrm{O}} & \qw & \qw & \cdots & \gategroup{1}{5}{2}{6}{.7em}{--}
+}}
+\end{document}
