@@ -13,15 +13,15 @@
 
 Quantum computing has meant a paradigm shift in computer science, introducing a new era of computational power and possibilities. By leveraging the principles of quantum mechanics, quantum computing offers capabilities far beyond those of classical computers. Although quantum hardware is still evolving, Noisy Intermediate-Scale Quantum (NISQ) \cite{Preskill} computers have already begun to unveil the potential of quantum computing, igniting widespread interest in implementing quantum algorithms that promise significant speedups over classical counterparts. In particular, the speedup of solving NP-complete problems is an area that quantum computing can tackle. In this paper, we have focused on the Hamiltonian Cycle Problem.\\
 This problem is one of Karp's 21 seminal NP-complete problems, it involves determining whether a given graph contains a Hamiltonian cycle—a cycle that visits every vertex exactly once. The problem is significant because of its similarities with the TSP, and its applications span various domains, including logistics and network optimization, where identifying optimal cycles is crucial AGREGAR CITAS. Traditional solution methods range from brute force approaches to sophisticated algorithms like dynamic programming and Monte Carlo simulations. In this paper, we propose utilizing Grover's algorithm to tackle the HC problem, offering the potential for quadratic speedup.\\
-The structure of this paper is as follows. An explanation of Grover's algorithm and background on the HC problem are given in Section II. The proposed methodology is given in Section III. Section IV generalizes the proposed solution and reduces the quantity of qubits necessary. Section V provides a discussion on the algorithm's implementation and complexity. Finally, Section VI concludes the paper and suggests future work.\\
+The structure of this paper is as follows. An explanation of Grover's algorithm is given in Section II. The proposed methodology is given in Section III. Section IV explores the existing solutions for the problem and compares the theoretical results.
 
 
 \section{Background}
 \subsection{Grover's Algorithm}
 
-The search algorithm developed by Lov K. Grover in 1997 \cite{Grover1} is a milestone in the development of quantum algorithms. It solves the problem of finding a tagged element (or $M$ elements) in a disordered set of $N$ elements using $k_{Gr}= \lfloor\frac{\pi}{4} \sqrt{\frac{N}{M}}\rfloor$ times a system, called oracle, which is able to identify this element. It presents a quadratic improvement in order relative to the classical brute-force search algorithm, which requires in the worst-case scenario N system calls. Grover's algorithm does not converge with 100\% probability to the desired state, it converges with an arbitrarily high probability that depends on the relationship between solutions and the size of the search space.\\
+The search algorithm developed by Lov K. Grover in 1997 \cite{Grover1} is a milestone in the development of quantum algorithms. It solves the problem of finding a tagged element (or $M$ elements) in a disordered set of $N$ elements using $k_{Gr}= \left\lfloor\frac{\pi}{4} \sqrt{\frac{N}{M}}\right\rfloor$ times a system, called oracle, which is able to identify this element. It presents a quadratic improvement in order relative to the classical brute-force search algorithm, which requires in the worst-case scenario N system calls. Grover's algorithm does not converge with 100\% probability to the desired state, it converges with an arbitrarily high probability that depends on the relationship between solutions and the size of the search space.\\
 As Grover proposed later, the algorithm can be used to speed up the solution of NP-complete problems \cite{Grover2}. Since, its application has been explored with some problems such as Clique problem \cite{Clique, Clique2}, k-coloring \cite{Coloring1, Coloring2} and SAT \cite{SAT_ions, SAT_paralel}. Nielsen and Chuang predicted the solution of the HC problem using Grover\cite{Nielsen_Chuang_2010}.\\
-The original problem presented by Grover \cite{Grover1} is as follows. Let there be a set of $N = 2^n$ quantum states in a Hilbert space ($\mathcal{H}_n$), where n is the number of qubits, and an unknown canonical basis state marked between them (solution to the problem). Given an oracle that identifies the marked element, the objective is to find this marked element with high probability, using as few queries to the oracle as possible.\\
+The original problem presented by Grover \cite{Grover1} is as follows. Let there be a set of $N = 2^n$ quantum states in a Hilbert space ($\mathcal{H}_n$), where n is the number of qubits, and an unknown canonical basis state marked between them (solution to the problem). Given a system, an operator, called an oracle that identifies the marked element, the objective is to find this marked element with high probability, using as few queries to the oracle as possible.\\
 Let $\ket{t}$ be the marked element of the base, and $\ket{s}$ the uniform superposition of all basis states. An oracle operator $O = I_d - 2\ket{t}\bra{t}$ is applied and changes the phase of the marked state. A diffusion operator $D = I_d - 2\ket{s}\bra{s}$ is applied and amplifies the amplitude of the marked state. Applying the Grover operator $(G=DO)$ $k_{Gr}$ times maximizes the probability of measuring $\ket{t}$.\\
 A more detailed and extended explanation for when the set has more than one solution can be found in reference \cite{Nielsen_Chuang_2010}.
 
@@ -96,7 +96,7 @@ The comparator circuit is applied to the $C^N_2$ combinations of position indexe
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.5]{figures/comparator_extended.pdf}
-\caption{First three comparisons in the Positional Exclusivity block of the example above.}
+\caption{First three comparisons in the Positional Exclusivity block}
 \end{figure}
 
 \subsubsection*{Missing Edge Detector Block}
@@ -203,6 +203,8 @@ This algorithm is quadratic in the number of qubits. The first formulation uses 
 Asymptotically, the quantum algorithm requires the square root of the number of operation a brute force classical algorithm requires. \\
 Some examples of the algorithm running on a simulator are shown in Fig. 9. The algorithm was implemented in Qiskit \cite{Qiskit}, and the results were obtained by running the algorithm on a classical simulator. The algorithm was run with $N = 4$ vertices.
 
+
+\section{Conclusion}
 
 
 \bibliography{references.bib} 
