@@ -1,0 +1,25 @@
+\documentclass{standalone}
+\usepackage{tikz}
+
+\begin{document}
+
+\begin{tikzpicture}[rotate=135]
+    \draw
+        (0.0:2) node (0){$v_0$}
+        (90.0:2) node (1){$v_1$}
+        (180.0:2) node (2){$v_2$}
+        (270.0:2) node (3){$v_3$};
+    \begin{scope}[->]
+        \draw (0) to (1);
+        \draw (0) to (2);
+        \draw (1) to (0);
+        \draw (1) to (2);
+        \draw (1) to (2);
+        \draw (2) to (0);
+        \draw (2) to (1);
+        \draw (2) to (3);
+        \draw (3) to (2);
+    \end{scope}
+\end{tikzpicture}
+
+\end{document}

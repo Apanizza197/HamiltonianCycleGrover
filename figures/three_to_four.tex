@@ -11,9 +11,11 @@
     % Your additional code here
     \path [->] (v1) edge node[left] {} (v2);
     \path [->] (v2) edge node[left] {} (v3);
-    \path [->] (v3) edge node[left] {} (v4);
+    \path [->, red] (v3) edge node[left] {} (v4);
     \path [->] (v4) edge node[left] {} (v1);
     \path [->] (v4) edge node[left] {} (v2);
+    \path [->, red] (v4) edge node[left] {} (v3);
+
 \end{tikzpicture}
 
 \end{document}
